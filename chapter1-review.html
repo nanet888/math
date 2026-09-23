@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chapter 1 Review: Number Relationships</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAFBF7; --grid:#DCE6F0; --ink:#1F3A93; --text:#1B2230; --muted:#5A6477;
+  --hl:#FFE45C; --good:#1E8E5A; --bad:#C63D2A; --card:#FFFFFF; --line:#C9D4E3;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141C28; --grid:#1F2B3D; --ink:#9DB7FF; --text:#E8EDF5; --muted:#A3AEC2;
+    --hl:#D9B92E; --good:#4CC38A; --bad:#FF7A66; --card:#1B2535; --line:#2E3C54;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141C28; --grid:#1F2B3D; --ink:#9DB7FF; --text:#E8EDF5; --muted:#A3AEC2;
+  --hl:#D9B92E; --good:#4CC38A; --bad:#FF7A66; --card:#1B2535; --line:#2E3C54;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; min-height:100%; color:var(--text);
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:24px 24px;
+  font-family:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size:18px; line-height:1.5;
+}
+.wrap{max-width:640px;margin:0 auto;padding:20px 18px 48px}
+h1,h2,.term{font-family:"Bricolage Grotesque", "Atkinson Hyperlegible", system-ui, sans-serif}
+h1{font-weight:800;font-size:2.1rem;line-height:1.1;margin:8px 0 6px;color:var(--ink)}
+.sub{color:var(--muted);margin:0 0 18px;font-size:1rem}
+.hl{background:linear-gradient(transparent 38%, var(--hl) 38%, var(--hl) 88%, transparent 88%);padding:0 .15em;color:inherit}
+nav{display:flex;gap:6px;margin:0 0 18px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding:8px 0}
+nav button{
+  flex:1;font:inherit;font-weight:700;font-size:.95rem;padding:10px 6px;border-radius:10px;
+  border:2px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer
+}
+nav button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+button:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+.panel[hidden]{display:none}
+.card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:20px}
+.meta{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;color:var(--muted);margin-bottom:10px}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:16px}
+.bar i{display:block;height:100%;background:var(--good);width:0;transition:width .3s}
+.lesson{font-size:.85rem;color:var(--muted)}
+.term{font-size:1.9rem;font-weight:800;margin:4px 0 10px;line-height:1.15}
+.prompt{color:var(--muted);font-size:.95rem;margin:0 0 14px}
+.answer{border-top:2px dashed var(--line);padding-top:14px;margin-top:6px}
+.answer p{margin:0 0 8px}
+.ex{font-size:.95rem;color:var(--muted)}
+.row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.btn{
+  font:inherit;font-weight:700;padding:12px 16px;border-radius:10px;cursor:pointer;
+  border:2px solid var(--ink);background:var(--ink);color:var(--paper);flex:1;min-width:120px
+}
+.btn.alt{background:transparent;color:var(--ink)}
+.btn.good{background:var(--good);border-color:var(--good)}
+.q{font-size:1.2rem;font-weight:700;margin:0 0 14px}
+.choices{display:grid;gap:8px}
+.choice{
+  font:inherit;text-align:left;padding:12px 14px;border-radius:10px;cursor:pointer;
+  border:2px solid var(--line);background:transparent;color:var(--text)
+}
+.choice:hover{border-color:var(--ink)}
+.choice.right{border-color:var(--good);background:color-mix(in srgb, var(--good) 14%, transparent)}
+.choice.wrong{border-color:var(--bad);background:color-mix(in srgb, var(--bad) 12%, transparent)}
+.choice:disabled{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:1rem}
+.fb.right{background:color-mix(in srgb, var(--good) 14%, transparent)}
+.fb.wrong{background:color-mix(in srgb, var(--bad) 12%, transparent)}
+.done{text-align:center}
+.big{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:3rem;color:var(--ink);margin:6px 0}
+.explain{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.explain li{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px}
+.explain .say{font-weight:700;margin:0 0 8px}
+.explain details summary{cursor:pointer;color:var(--ink);font-weight:700;font-size:.95rem}
+.explain details p{margin:8px 0 0}
+.trap{border-left:5px solid var(--hl);background:var(--card);padding:14px 16px;border-radius:0 12px 12px 0;margin:18px 0}
+.trap h2{font-size:1.15rem;margin:0 0 6px}
+.trap p{margin:0 0 6px}
+.note{font-size:.9rem;color:var(--muted);margin-top:22px}
+sup{font-size:.7em;line-height:0}
+@media (prefers-reduced-motion: reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Chapter 1 review</h1>
+  <p class="sub">Number relationships. Factors, multiples, exponents, squares, and big numbers. Quiz on Thursday.</p>
+
+  <nav role="tablist">
+    <button role="tab" aria-selected="true" data-tab="words">Words</button>
+    <button role="tab" aria-selected="false" data-tab="practice">Practice</button>
+    <button role="tab" aria-selected="false" data-tab="explain">Explain it</button>
+  </nav>
+
+  <!-- WORDS -->
+  <section class="panel" id="words">
+    <div class="meta"><span id="wCount"></span><button class="btn alt" style="flex:0;min-width:0;padding:6px 12px;font-size:.85rem" id="wReset">Start over</button></div>
+    <div class="bar"><i id="wBar"></i></div>
+    <div class="card" id="wCard"></div>
+    <div class="trap">
+      <h2>The trap most people fall into</h2>
+      <p><span class="hl">Factors</span> go <b>into</b> a number, so they're small: the factors of 12 are 1, 2, 3, 4, 6, 12.</p>
+      <p><span class="hl">Multiples</span> come <b>out of</b> a number, so they're big: the multiples of 12 are 12, 24, 36, 48…</p>
+    </div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section class="panel" id="practice" hidden>
+    <div class="meta"><span id="pCount"></span><span id="pScore"></span></div>
+    <div class="bar"><i id="pBar"></i></div>
+    <div class="card" id="pCard"></div>
+  </section>
+
+  <!-- EXPLAIN -->
+  <section class="panel" id="explain" hidden>
+    <p class="sub">Say each answer out loud, in your own words, before you open it. If you can explain it, you know it.</p>
+    <ul class="explain" id="eList"></ul>
+  </section>
+
+  <p class="note">Covers lessons 1.1 to 1.4. Do the Words tab first, then Practice. Short sessions work better than long ones.</p>
+</div>
+
+<script>
+const CARDS = [
+  ["1.1","Standard form","A number written with digits, with a space between each group of three.","1 306 745 028"],
+  ["1.1","Periods","The groups of three digits in a number: ones, thousands, millions, billions.","In 4 016 780 000, the periods are 4 | 016 | 780 | 000."],
+  ["1.1","Billion","One thousand millions. 1 000 000 000, which is 10<sup>9</sup>.","7 436 000 000 is about 7.4 billion."],
+  ["1.2","Factor","A number that divides into another number exactly, with nothing left over.","3 is a factor of 12, because 12 ÷ 3 = 4."],
+  ["1.2","Common factor","A factor that two or more numbers share.","Common factors of 12 and 30: 1, 2, 3, 6."],
+  ["1.2","Greatest common factor (GCF)","The biggest factor that two or more numbers share.","GCF of 45 and 75 is 15."],
+  ["1.2","Multiple","What you get when you multiply a number by 1, 2, 3, 4…","Multiples of 5: 5, 10, 15, 20, 25…"],
+  ["1.2","Common multiple","A number that is a multiple of two or more numbers.","Common multiples of 8 and 12: 24, 48, 72…"],
+  ["1.2","Least common multiple (LCM)","The smallest multiple that two or more numbers share.","LCM of 6 and 9 is 18."],
+  ["1.3","Prime number","A number with exactly two factors: 1 and itself.","2, 3, 5, 7, 11, 13"],
+  ["1.3","Composite number","A number with more than two factors.","12 (factors 1, 2, 3, 4, 6, 12)"],
+  ["1.3","Prime factorization","Writing a number as a multiplication of only prime numbers.","1470 = 2 × 3 × 5 × 7<sup>2</sup>"],
+  ["1.3","Exponential notation","A short way to write the same number multiplied by itself.","5 × 5 × 5 × 5 = 5<sup>4</sup>"],
+  ["1.3","Base","The number being multiplied over and over.","In 2<sup>6</sup>, the base is 2."],
+  ["1.3","Exponent","How many times the base is used as a factor.","In 2<sup>6</sup>, the exponent is 6, so 2 × 2 × 2 × 2 × 2 × 2."],
+  ["1.3","Power","A number written with a base and an exponent. You say “raised to the power of.”","10<sup>9</sup> is “10 to the power of 9.”"],
+  ["1.3","Power of 10","10 multiplied by itself some number of times.","100 = 10<sup>2</sup>, 1000 = 10<sup>3</sup>"],
+  ["1.3","Zero power","Any number to the power of 0 equals 1.","5<sup>0</sup> = 1, 198<sup>0</sup> = 1"],
+  ["1.4","Square (of a number)","A number multiplied by itself.","8<sup>2</sup> = 8 × 8 = 64"],
+  ["1.4","Square root","The number you square to get another number. It undoes squaring.","√49 = 7, because 7 × 7 = 49."],
+  ["1.4","Perfect square","The square of a whole number. Its square root is a whole number.","36, 49, 64, 81"],
+  ["1.4","Non-perfect square","A whole number whose square root is a decimal that never ends.","√40 ≈ 6.3246"]
+];
+
+const QS = [
+  ["Which number is a factor of 36?", ["8","9","72","5"], 1, "36 ÷ 9 = 4 with nothing left over. 72 is a multiple of 36, not a factor."],
+  ["What are all the factors of 28?", ["1, 2, 4, 7, 14, 28","2, 4, 7, 14","28, 56, 84","1, 2, 3, 4, 7, 28"], 0, "Find the pairs: 1 × 28, 2 × 14, 4 × 7. Don't forget 1 and the number itself."],
+  ["What are the common factors of 16 and 24?", ["1, 2, 4, 8","2, 4","1, 2, 4, 8, 16","48"], 0, "Factors of 16: 1, 2, 4, 8, 16. Factors of 24: 1, 2, 3, 4, 6, 8, 12, 24. Shared: 1, 2, 4, 8."],
+  ["What is the GCF of 24 and 36?", ["6","12","72","4"], 1, "12 goes into both (24 ÷ 12 = 2, 36 ÷ 12 = 3), and nothing bigger does."],
+  ["What is the LCM of 8 and 10?", ["2","80","40","18"], 2, "Multiples of 8: 8, 16, 24, 32, 40. Multiples of 10: 10, 20, 30, 40. The first one they share is 40."],
+  ["What are the first three common multiples of 3 and 5?", ["1, 3, 5","15, 30, 45","3, 5, 15","8, 15, 30"], 1, "The LCM is 15, and every common multiple after that is a multiple of 15."],
+  ["Is 2 a prime number?", ["No, prime numbers are odd","Yes, its only factors are 1 and 2","No, it's composite","Only sometimes"], 1, "2 has exactly two factors, 1 and 2. It's the only even prime."],
+  ["In 12<sup>4</sup>, what is the base?", ["4","12","48","16"], 1, "The base is the big number being multiplied. The small raised number is the exponent."],
+  ["Write 2 × 2 × 2 × 2 × 2 in exponential notation.", ["5<sup>2</sup>","2<sup>5</sup>","10","2 × 5"], 1, "The base is 2, and it's used as a factor 5 times."],
+  ["Is this correct? 2 × 2 × 2 = 6<sup>2</sup>", ["Yes","No, it should be 2<sup>3</sup>","No, it should be 3<sup>2</sup>","No, it should be 8<sup>1</sup>"], 1, "The base is 2 and it appears 3 times, so 2<sup>3</sup>. Multiplying 2 × 3 = 6 is the mistake."],
+  ["What is 3<sup>4</sup>?", ["12","7","81","64"], 2, "3 × 3 × 3 × 3 = 9 × 9 = 81. Not 3 × 4."],
+  ["What is 17<sup>0</sup>?", ["0","17","1","170"], 2, "Any number to the power of 0 is 1."],
+  ["Which shows 2598 in expanded form using powers of 10?", ["2 × 10<sup>3</sup> + 5 × 10<sup>2</sup> + 9 × 10<sup>1</sup> + 8 × 10<sup>0</sup>","2 × 10<sup>4</sup> + 5 × 10<sup>3</sup> + 9 × 10<sup>2</sup> + 8 × 10<sup>1</sup>","2<sup>3</sup> + 5<sup>2</sup> + 9<sup>1</sup> + 8<sup>0</sup>","2598 × 10<sup>0</sup>"], 0, "The 2 is in the thousands place (10<sup>3</sup>) and the 8 is in the ones place (10<sup>0</sup> = 1)."],
+  ["What is the prime factorization of 125?", ["25 × 5","5<sup>3</sup>","5 × 25","1 × 125"], 1, "125 = 5 × 25 = 5 × 5 × 5 = 5<sup>3</sup>. 25 isn't prime, so it has to be broken down."],
+  ["What is the prime factorization of 630?", ["2 × 3<sup>2</sup> × 5 × 7","2 × 5 × 63","6 × 105","2 × 3 × 5 × 7"], 0, "630 = 2 × 315 = 2 × 3 × 105 = 2 × 3 × 3 × 35 = 2 × 3 × 3 × 5 × 7."],
+  ["Is 126 divisible by 3?", ["Yes, 1 + 2 + 6 = 9, and 9 is divisible by 3","No, it ends in 6","No, it's even","Only if it ends in 3"], 0, "Divisibility rule for 3: add the digits. If the sum is divisible by 3, so is the number."],
+  ["What is √64?", ["32","8","16","4096"], 1, "8 × 8 = 64. Square root undoes squaring."],
+  ["Which are the perfect squares between 25 and 100?", ["30, 40, 50, 60","36, 49, 64, 81","36, 48, 64, 80","27, 64"], 1, "6<sup>2</sup> = 36, 7<sup>2</sup> = 49, 8<sup>2</sup> = 64, 9<sup>2</sup> = 81."],
+  ["Is 130 a perfect square?", ["Yes","No, it's between 11<sup>2</sup> = 121 and 12<sup>2</sup> = 144","Yes, 13 × 10 = 130","No, it's even"], 1, "No whole number times itself gives 130, since it falls between 121 and 144."],
+  ["A square garden has an area of 49 m<sup>2</sup>. What is its perimeter?", ["7 m","14 m","28 m","49 m"], 2, "Side = √49 = 7 m. Perimeter = 4 × 7 = 28 m."],
+  ["Write “four billion sixteen million seven hundred eighty thousand” in standard form.", ["4 016 780 000","4 160 780 000","4 016 780","416 780 000"], 0, "4 | 016 | 780 | 000. Each period needs three digits, so sixteen million is 016."],
+  ["Express 1 534 567 890 as billions, rounded to one decimal place.", ["1.5 billion","1.53 billion","15 billion","2 billion"], 0, "1.534… rounded to one decimal place is 1.5."],
+  ["Express 967 550 139 as billions, rounded to one decimal place.", ["0.9 billion","9.7 billion","1.0 billion","0.96 billion"], 2, "It's 0.9675… billion. The next digit after 0.9 is 6, so round up to 1.0."],
+  ["Which is greater: 680 000 or 2 × 10<sup>8</sup> + 5 × 10<sup>5</sup>?", ["680 000","2 × 10<sup>8</sup> + 5 × 10<sup>5</sup>","They're equal","Can't tell"], 1, "2 × 10<sup>8</sup> alone is 200 000 000, way bigger than 680 000."]
+];
+
+const EXPLAIN = [
+  ["What's the difference between a factor and a multiple?","A factor divides into a number exactly, so it's smaller or equal. A multiple is what you get when you multiply the number, so it's bigger or equal. 4 is a factor of 12. 24 is a multiple of 12."],
+  ["What does the exponent tell you in 3<sup>5</sup>?","That 3 is used as a factor 5 times: 3 × 3 × 3 × 3 × 3. It does not mean 3 × 5."],
+  ["Why does any number to the power of 0 equal 1?","Look at the pattern: 3<sup>3</sup> = 27, 3<sup>2</sup> = 9, 3<sup>1</sup> = 3. Each step divides by 3. One more step: 3 ÷ 3 = 1, so 3<sup>0</sup> = 1."],
+  ["How do you find the GCF of two numbers?","List the factors of each, circle the ones they share, and pick the biggest. Or break both into prime factors and multiply the primes they share."],
+  ["How do you find the LCM of two numbers?","List multiples of each until you find the first one they share. That smallest shared one is the LCM."],
+  ["How do you know which power of 10 to use in expanded form?","It matches the place value. Ones = 10<sup>0</sup>, tens = 10<sup>1</sup>, hundreds = 10<sup>2</sup>, thousands = 10<sup>3</sup>. Count how many places the digit is from the ones place."],
+  ["How do you know 130 isn't a perfect square without a calculator?","11 × 11 = 121 and 12 × 12 = 144. 130 is in between, so no whole number squared gives 130."],
+  ["What's the difference between a prime and a composite number?","A prime has exactly two factors, 1 and itself. A composite has more than two. 7 is prime. 8 is composite because 2 and 4 also go into it."]
+];
+
+// Tabs
+document.querySelectorAll('nav button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected', x===b ? 'true':'false'));
+    document.querySelectorAll('.panel').forEach(p=>p.hidden = p.id !== b.dataset.tab);
+    window.scrollTo({top:0});
+  });
+});
+
+// Words
+let wQueue, wKnown, wShown;
+function wStart(){ wQueue = CARDS.map((_,i)=>i); wKnown = 0; wShown=false; wRender(); }
+function wRender(){
+  const total = CARDS.length;
+  document.getElementById('wCount').textContent = wKnown + " of " + total + " words known";
+  document.getElementById('wBar').style.width = (wKnown/total*100)+"%";
+  const card = document.getElementById('wCard');
+  if(!wQueue.length){
+    card.innerHTML = '<div class="done"><div class="big">'+total+'/'+total+'</div><p>You know every word. Now try the Practice tab.</p></div>';
+    return;
+  }
+  const [lesson, term, def, ex] = CARDS[wQueue[0]];
+  let html = '<div class="lesson">Lesson '+lesson+'</div><div class="term"><span class="hl">'+term+'</span></div>';
+  if(!wShown){
+    html += '<p class="prompt">Say what it means out loud first. Then check.</p><div class="row"><button class="btn" id="wShow">Check my answer</button></div>';
+  } else {
+    html += '<div class="answer"><p>'+def+'</p><p class="ex">Example: '+ex+'</p></div>'+
+      '<div class="row"><button class="btn alt" id="wNo">Not yet</button><button class="btn good" id="wYes">I got it</button></div>';
+  }
+  card.innerHTML = html;
+  if(!wShown){ document.getElementById('wShow').onclick=()=>{wShown=true;wRender();}; }
+  else{
+    document.getElementById('wYes').onclick=()=>{wQueue.shift();wKnown++;wShown=false;wRender();};
+    document.getElementById('wNo').onclick=()=>{
+      const c=wQueue.shift(); const pos=Math.min(3,wQueue.length); wQueue.splice(pos,0,c); wShown=false; wRender();
+    };
+  }
+}
+document.getElementById('wReset').onclick=wStart;
+
+// Practice
+let pOrder, pIdx, pScore, pMissed;
+function pStart(list){ pOrder = list || QS.map((_,i)=>i); pIdx=0; pScore=0; pMissed=[]; pRender(); }
+function pRender(){
+  const total=pOrder.length;
+  document.getElementById('pCount').textContent = pIdx<total ? "Question "+(pIdx+1)+" of "+total : "Done";
+  document.getElementById('pScore').textContent = pScore+" correct";
+  document.getElementById('pBar').style.width=(pIdx/total*100)+"%";
+  const card=document.getElementById('pCard');
+  if(pIdx>=total){
+    let html='<div class="done"><div class="big">'+pScore+'/'+total+'</div>';
+    if(pMissed.length){
+      html+='<p>'+pMissed.length+' to go back over.</p><div class="row"><button class="btn" id="pRetry">Redo the ones I missed</button><button class="btn alt" id="pAll">Start over</button></div>';
+    } else {
+      html+='<p>All correct. Now try explaining a few out loud in the Explain it tab.</p><div class="row"><button class="btn alt" id="pAll">Start over</button></div>';
+    }
+    card.innerHTML=html+'</div>';
+    const r=document.getElementById('pRetry'); if(r) r.onclick=()=>pStart(pMissed.slice());
+    document.getElementById('pAll').onclick=()=>pStart();
+    return;
+  }
+  const [q, choices, ans, why] = QS[pOrder[pIdx]];
+  card.innerHTML='<p class="q">'+q+'</p><div class="choices">'+
+    choices.map((c,i)=>'<button class="choice" data-i="'+i+'">'+c+'</button>').join('')+
+    '</div><div id="pFb"></div>';
+  card.querySelectorAll('.choice').forEach(btn=>{
+    btn.onclick=()=>{
+      const pick=+btn.dataset.i, ok=pick===ans;
+      card.querySelectorAll('.choice').forEach(b=>{
+        b.disabled=true;
+        if(+b.dataset.i===ans) b.classList.add('right');
+        else if(+b.dataset.i===pick) b.classList.add('wrong');
+      });
+      if(ok) pScore++; else pMissed.push(pOrder[pIdx]);
+      document.getElementById('pFb').innerHTML='<div class="fb '+(ok?'right':'wrong')+'"><b>'+(ok?'Right.':'Not quite.')+'</b> '+why+'</div>'+
+        '<div class="row"><button class="btn" id="pNext">'+(pIdx+1<pOrder.length?'Next question':'See my score')+'</button></div>';
+      document.getElementById('pScore').textContent = pScore+" correct";
+      document.getElementById('pNext').onclick=()=>{pIdx++;pRender();};
+      document.getElementById('pNext').focus();
+    };
+  });
+}
+
+// Explain
+document.getElementById('eList').innerHTML = EXPLAIN.map(([q,a])=>
+  '<li><p class="say">'+q+'</p><details><summary>Check my answer</summary><p>'+a+'</p></details></li>').join('');
+
+wStart(); pStart();
+</script>
+</body>
+</html>

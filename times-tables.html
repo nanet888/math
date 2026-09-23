@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Times Tables Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAFBF7; --grid:#DCE6F0; --ink:#1F3A93; --text:#1B2230; --muted:#5A6477;
+  --hl:#FFE45C; --good:#1E8E5A; --bad:#C63D2A; --card:#FFFFFF; --line:#C9D4E3; --onink:#FFFFFF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141C28; --grid:#1F2B3D; --ink:#9DB7FF; --text:#E8EDF5; --muted:#A3AEC2;
+    --hl:#D9B92E; --good:#3FB57E; --bad:#E0634F; --card:#1B2535; --line:#2E3C54; --onink:#141C28;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141C28; --grid:#1F2B3D; --ink:#9DB7FF; --text:#E8EDF5; --muted:#A3AEC2;
+  --hl:#D9B92E; --good:#3FB57E; --bad:#E0634F; --card:#1B2535; --line:#2E3C54; --onink:#141C28;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100%;color:var(--text);background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.5;
+}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px 48px}
+h1,h2,h3,.qtext,.big{font-family:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif}
+h1{font-weight:800;font-size:2.1rem;line-height:1.1;margin:8px 0 6px;color:var(--ink)}
+h2{font-size:1.25rem;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 14px;font-size:1rem}
+.hl{background:linear-gradient(transparent 38%,var(--hl) 38%,var(--hl) 88%,transparent 88%);padding:0 .15em}
+.summary{display:flex;justify-content:space-between;font-size:.95rem;color:var(--muted);margin-bottom:6px}
+.summary b{color:var(--text)}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--good);width:0;transition:width .3s}
+nav{display:flex;gap:6px;margin:0 0 16px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding:8px 0}
+nav button{flex:1;font:inherit;font-weight:700;font-size:.95rem;padding:10px 6px;border-radius:10px;border:2px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+nav button[aria-selected="true"]{background:var(--ink);color:var(--onink)}
+button:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+.panel[hidden],[hidden]{display:none!important}
+.card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:18px}
+.modes{display:grid;gap:10px}
+.mode{font:inherit;text-align:left;cursor:pointer;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--text)}
+.mode:hover{border-color:var(--ink)}
+.mode.primary{border-color:var(--ink);border-width:3px}
+.mode b{display:block;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.2rem;color:var(--ink)}
+.mode span{color:var(--muted);font-size:.95rem}
+.tables{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:10px}
+.tables button{font:inherit;font-weight:700;padding:10px 0;border-radius:8px;border:2px solid var(--line);background:transparent;color:var(--text);cursor:pointer}
+.tables button:hover{border-color:var(--ink)}
+.shead{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;color:var(--muted);margin-bottom:8px}
+.stop{font:inherit;font-size:.85rem;font-weight:700;padding:6px 12px;border-radius:8px;border:2px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.qtext{font-size:3.1rem;font-weight:800;text-align:center;margin:8px 0 4px;letter-spacing:.01em}
+.qtext .miss{display:inline-block;min-width:1.2em;border-bottom:4px solid var(--hl);color:var(--ink)}
+.ansbox{margin:6px auto 10px;max-width:220px;height:64px;border:3px solid var(--ink);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:2.2rem;font-weight:800;background:var(--paper)}
+.ansbox.good{border-color:var(--good);color:var(--good)}
+.ansbox.badc{border-color:var(--bad);color:var(--bad)}
+.fb{min-height:3.2em;text-align:center;font-size:1rem;margin-bottom:8px}
+.fb .hint{display:block;color:var(--muted);font-size:.95rem;margin-top:4px}
+.fb b.ok{color:var(--good)} .fb b.no{color:var(--bad)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pad button{font:inherit;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:1.6rem;padding:12px 0;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;touch-action:manipulation}
+.pad button:active{background:var(--grid)}
+.pad .enter{background:var(--ink);color:var(--onink);border-color:var(--ink)}
+.timer{font-weight:700;color:var(--ink)}
+.done{text-align:center}
+.big{font-weight:800;font-size:3rem;color:var(--ink);margin:4px 0}
+.missed{list-style:none;padding:0;margin:12px 0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.missed li{border:2px solid var(--bad);border-radius:8px;padding:4px 10px;font-weight:700}
+.row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;padding:12px 16px;border-radius:10px;cursor:pointer;border:2px solid var(--ink);background:var(--ink);color:var(--onink);flex:1;min-width:120px}
+.btn.alt{background:transparent;color:var(--ink)}
+/* map */
+.mapwrap{overflow-x:auto}
+table.map{border-collapse:separate;border-spacing:3px;width:100%;table-layout:fixed;min-width:320px}
+.map th{font-size:.8rem;color:var(--muted);font-weight:700;padding:2px 0}
+.map td{padding:0}
+.map button{width:100%;aspect-ratio:1;border-radius:5px;border:1px solid var(--line);background:transparent;cursor:pointer;padding:0}
+.map .c-bad{background:var(--bad);border-color:var(--bad)}
+.map .c-ok{background:var(--hl);border-color:var(--hl)}
+.map .c-good{background:var(--good);border-color:var(--good)}
+.map button.sel{outline:3px solid var(--ink);outline-offset:1px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.85rem;color:var(--muted);margin:12px 0}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:5px;border:1px solid var(--line)}
+.detail{min-height:3em;margin-top:6px}
+.detail b{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.3rem}
+/* tricks */
+.tricks{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.tricks li{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:14px 16px}
+.tricks h3{margin:0 0 4px;font-size:1.15rem;color:var(--ink)}
+.tricks p{margin:0}
+.tricks .ex{color:var(--muted);font-size:.95rem;margin-top:4px}
+.lead{border-left:5px solid var(--hl);background:var(--card);padding:14px 16px;border-radius:0 12px 12px 0;margin-bottom:14px}
+.lead p{margin:0 0 6px}
+.note{font-size:.88rem;color:var(--muted);margin-top:20px}
+.reset{font:inherit;font-size:.85rem;background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0;margin-top:14px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Times tables</h1>
+  <p class="sub">A little every day beats a lot once. The map turns green as you learn them.</p>
+
+  <div class="summary"><span><b id="mCount">0</b> of 66 facts mastered</span><span id="sBest"></span></div>
+  <div class="bar"><i id="mBar"></i></div>
+
+  <nav role="tablist">
+    <button role="tab" aria-selected="true" data-tab="practice">Practice</button>
+    <button role="tab" aria-selected="false" data-tab="mapp">Map</button>
+    <button role="tab" aria-selected="false" data-tab="tricks">Tricks</button>
+  </nav>
+
+  <!-- PRACTICE -->
+  <section class="panel" id="practice">
+    <div id="home">
+      <div class="modes">
+        <button class="mode primary" data-mode="smart"><b>Smart practice</b><span id="smartDesc">20 questions. Picks the facts you need most.</span></button>
+        <button class="mode" data-mode="missing"><b>Missing number</b><span>7 × ? = 56. The same skill as finding factors.</span></button>
+        <button class="mode" data-mode="sprint"><b>60-second sprint</b><span id="sprintDesc">How many can you get right in one minute?</span></button>
+        <div class="mode" style="cursor:default"><b>One table</b><span>Pick a table to work on.</span>
+          <div class="tables" id="tablePick"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="session" hidden>
+      <div class="card">
+        <div class="shead"><span id="sLabel"></span><span id="sProg"></span><button class="stop" id="stopBtn">Stop</button></div>
+        <div class="qtext" id="qText" aria-live="polite"></div>
+        <div class="ansbox" id="ansBox"></div>
+        <div class="fb" id="fb" aria-live="polite"></div>
+        <div class="pad" id="pad"></div>
+      </div>
+    </div>
+
+    <div id="endView" hidden>
+      <div class="card done" id="endCard"></div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section class="panel" id="mapp" hidden>
+    <p class="sub">Each square is one fact. 7 × 8 and 8 × 7 are the same fact, so the map is a mirror. Tap a square to see it.</p>
+    <div class="mapwrap"><table class="map" id="mapTable"></table></div>
+    <div class="legend">
+      <span><i></i>Not tried yet</span>
+      <span><i style="background:var(--bad);border-color:var(--bad)"></i>Missed last time</span>
+      <span><i style="background:var(--hl);border-color:var(--hl)"></i>Knows it, still slow</span>
+      <span><i style="background:var(--good);border-color:var(--good)"></i>Mastered</span>
+    </div>
+    <div class="card detail" id="detail">Tap a square.</div>
+    <button class="reset" id="resetBtn">Reset all progress</button>
+  </section>
+
+  <!-- TRICKS -->
+  <section class="panel" id="tricks" hidden>
+    <div class="lead">
+      <p><b>You need fewer facts than you think.</b> 7 × 8 is the same as 8 × 7, so learning one gives you both.</p>
+      <p>The ×2, ×5, ×10 and ×11 tables are easy patterns. Once those are done, only a handful of hard ones are left.</p>
+    </div>
+    <ul class="tricks" id="trickList"></ul>
+  </section>
+
+  <p class="note">Progress is saved on this device. A fact counts as mastered once it's answered correctly in under 4 seconds three times.</p>
+</div>
+
+<script>
+const KEY='elias-times-tables-v1', FAST=4000, DAY=864e5, INT=[0,0,1,2,4,7];
+const FACTS=[]; for(let a=2;a<=12;a++) for(let b=a;b<=12;b++) FACTS.push(a+'x'+b);
+const k=(a,b)=>Math.min(a,b)+'x'+Math.max(a,b);
+let S={facts:{},sprintBest:0};
+try{const raw=localStorage.getItem(KEY); if(raw){const p=JSON.parse(raw); if(p&&p.facts) S={facts:p.facts,sprintBest:p.sprintBest||0};}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function status(key){const f=S.facts[key]; if(!f) return 'new'; if(f.lvl>=3) return 'good'; if(f.lvl>=1) return 'ok'; return 'bad';}
+function record(a,b,correct,ms){
+  const key=k(a,b); const f=S.facts[key]||{lvl:0,seen:0,right:0,wrong:0,last:0};
+  f.seen++; f.last=Date.now();
+  if(correct){ f.right++; if(ms<FAST) f.lvl=Math.min(5,f.lvl+1); else if(f.lvl===0) f.lvl=1; }
+  else { f.wrong++; f.lvl=0; }
+  S.facts[key]=f; save(); updateSummary();
+}
+function mastered(){return FACTS.filter(x=>status(x)==='good').length;}
+function updateSummary(){
+  const m=mastered();
+  document.getElementById('mCount').textContent=m;
+  document.getElementById('mBar').style.width=(m/66*100)+'%';
+  document.getElementById('sBest').textContent=S.sprintBest?('Sprint best: '+S.sprintBest):'';
+  document.getElementById('sprintDesc').textContent=S.sprintBest?('How many in one minute? Your best is '+S.sprintBest+'.'):'How many can you get right in one minute?';
+  document.getElementById('smartDesc').textContent=Object.keys(S.facts).length?'20 questions. Picks the facts you need most.':'20 questions. The first round finds out which facts you already know.';
+}
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+function hint(a,b){
+  const p=a*b;
+  let extra=((a===7&&b===8)||(a===8&&b===7))?' Remember 5, 6, 7, 8: 56 = 7 × 8.':'';
+  if(a===b&&a>=6) return a+' × '+a+' = '+p+'. It\u2019s a perfect square, so learn it on its own.';
+  const order=[10,11,2,5,9,4,3,12,6,8,7];
+  for(const f of order){
+    if(a!==f&&b!==f) continue;
+    const n=(a===f)?b:a;
+    switch(f){
+      case 10:return 'Add a zero: '+n+' becomes '+p+'.';
+      case 11:return n<=9?('Write '+n+' twice: '+p+'.'):('10 × '+n+' = '+(10*n)+', plus one more '+n+' = '+p+'.');
+      case 2:return 'Double '+n+': '+p+'.';
+      case 5:return '10 × '+n+' = '+(10*n)+'. Half of that is '+p+'.';
+      case 9:return '10 × '+n+' = '+(10*n)+'. Take away one '+n+': '+p+'.'+((n<=10||n===12)?' Check: the digits add up to 9.':'');
+      case 4:return 'Double '+n+' = '+(2*n)+'. Double again = '+p+'.';
+      case 3:return 'Double '+n+' = '+(2*n)+'. Add one more '+n+': '+p+'.';
+      case 12:return '10 × '+n+' = '+(10*n)+', plus 2 × '+n+' = '+(2*n)+'. Together: '+p+'.';
+      case 6:return '5 × '+n+' = '+(5*n)+', plus one more '+n+': '+p+'.';
+      case 8:return 'Double '+n+' three times: '+(2*n)+', '+(4*n)+', '+p+'.'+extra;
+      case 7:return '5 × '+n+' = '+(5*n)+', plus 2 × '+n+' = '+(2*n)+'. Together: '+p+'.'+extra;
+    }
+  }
+  return a+' × '+b+' = '+p+'.';
+}
+
+function makeQ(key,missing){
+  let [a,b]=key.split('x').map(Number); if(Math.random()<.5)[a,b]=[b,a];
+  return {a,b,miss:missing?(Math.random()<.5?0:1):null};
+}
+function smartKeys(n){
+  const now=Date.now();
+  if(!Object.keys(S.facts).length) return shuffle(FACTS).slice(0,n);
+  const unseen=shuffle(FACTS.filter(x=>!S.facts[x]));
+  const weak=shuffle(FACTS.filter(x=>S.facts[x]&&S.facts[x].lvl<=1));
+  const due=shuffle(FACTS.filter(x=>{const f=S.facts[x];return f&&f.lvl>=2&&now-f.last>=INT[f.lvl]*DAY;}));
+  const rest=shuffle(FACTS.filter(x=>S.facts[x]&&S.facts[x].lvl>=2&&!due.includes(x)));
+  const out=new Set();
+  const take=(arr,max)=>{for(const x of arr){if(out.size>=n||max<=0)break;if(!out.has(x)){out.add(x);max--;}}};
+  take(weak,8);take(unseen,6);take(due,n);take(unseen,n);take(weak,n);take(rest,n);
+  return shuffle([...out]);
+}
+
+// ---------- session ----------
+let sess=null, sid=0;
+const $=id=>document.getElementById(id);
+function show(view){['home','session','endView'].forEach(v=>$(v).hidden=v!==view);}
+
+function start(mode,table){
+  sid++;
+  let queue=[];
+  if(mode==='smart') queue=smartKeys(20).map(x=>makeQ(x,false));
+  else if(mode==='missing') queue=smartKeys(20).map(x=>makeQ(x,true));
+  else if(mode==='table'){const ks=[];for(let b=2;b<=12;b++)ks.push(k(table,b));queue=shuffle(ks).map(x=>{const [p,q]=x.split('x').map(Number);const other=p===table?q:p;return Math.random()<.5?{a:table,b:other,miss:null}:{a:other,b:table,miss:null};});}
+  else if(mode==='sprint') queue=[makeQ(FACTS[Math.floor(Math.random()*66)],false)];
+  sess={mode,table,queue,idx:0,right:0,answered:0,missed:new Set(),input:'',retype:false,lock:false,qStart:0,endAt:0,myId:sid};
+  $('sLabel').textContent=mode==='smart'?'Smart practice':mode==='missing'?'Missing number':mode==='sprint'?'Sprint':('The '+table+' table');
+  show('session');
+  if(mode==='sprint'){
+    sess.endAt=performance.now()+60000;
+    const id=sid;
+    const tick=()=>{ if(!sess||sess.myId!==id) return; const left=Math.max(0,Math.ceil((sess.endAt-performance.now())/1000));
+      $('sProg').innerHTML='<span class="timer">'+left+'s</span> · '+sess.right+' right';
+      if(left<=0){finish();return;} setTimeout(tick,250); };
+    tick();
+  }
+  renderQ();
+}
+function expected(q){return q.miss===null?q.a*q.b:(q.miss===0?q.a:q.b);}
+function renderQ(){
+  const q=sess.queue[sess.idx];
+  if(sess.mode!=='sprint') $('sProg').textContent=(sess.idx+1)+' / '+sess.queue.length;
+  else $('sProg').innerHTML='<span class="timer">'+Math.max(0,Math.ceil((sess.endAt-performance.now())/1000))+'s</span> · '+sess.right+' right';
+  const M='<span class="miss">?</span>';
+  $('qText').innerHTML=q.miss===null?(q.a+' × '+q.b):(q.miss===0?(M+' × '+q.b+' = '+(q.a*q.b)):(q.a+' × '+M+' = '+(q.a*q.b)));
+  sess.input='';sess.retype=false;sess.lock=false;
+  $('ansBox').className='ansbox';$('ansBox').textContent='';$('fb').innerHTML='';
+  sess.qStart=performance.now();
+}
+function press(key){
+  if(!sess||sess.lock||$('session').hidden) return;
+  if(key==='back'){sess.input=sess.input.slice(0,-1);}
+  else if(key==='enter'){submit();return;}
+  else if(sess.input.length<3){sess.input+=key;}
+  $('ansBox').textContent=sess.input;
+  if(!sess.retype) $('ansBox').className='ansbox';
+}
+function submit(){
+  if(!sess.input) return;
+  const q=sess.queue[sess.idx], exp=expected(q), val=parseInt(sess.input,10), id=sess.myId;
+  if(sess.retype){
+    if(val===exp){sess.lock=true;$('ansBox').className='ansbox good';setTimeout(()=>{if(sess&&sess.myId===id)next();},350);}
+    else{sess.input='';$('ansBox').textContent='';$('fb').innerHTML='<b class="no">Type '+exp+' to keep going.</b><span class="hint">'+hint(q.a,q.b)+'</span>';}
+    return;
+  }
+  const ms=performance.now()-sess.qStart, ok=val===exp;
+  record(q.a,q.b,ok,ms); sess.answered++;
+  if(ok){
+    sess.right++; sess.lock=true;
+    $('ansBox').className='ansbox good';
+    $('fb').innerHTML=ms<FAST?'<b class="ok">Right, and fast.</b>':'<b class="ok">Right.</b><span class="hint">Now try to get this one faster.</span>';
+    setTimeout(()=>{if(sess&&sess.myId===id)next();},ms<FAST?450:1000);
+  } else {
+    sess.missed.add(q.a+' × '+q.b+' = '+(q.a*q.b));
+    $('ansBox').className='ansbox badc';
+    if(sess.mode==='sprint'){
+      sess.lock=true;
+      $('fb').innerHTML='<b class="no">'+q.a+' × '+q.b+' = '+(q.a*q.b)+'</b>';
+      setTimeout(()=>{if(sess&&sess.myId===id)next();},1300);
+    } else {
+      $('fb').innerHTML='<b class="no">'+q.a+' × '+q.b+' = '+(q.a*q.b)+'.</b> Type '+exp+' to keep going.<span class="hint">'+hint(q.a,q.b)+'</span>';
+      sess.retype=true; sess.input='';
+      setTimeout(()=>{if(sess&&sess.myId===id&&sess.retype){$('ansBox').className='ansbox';$('ansBox').textContent='';}},700);
+      if(!q.again){const copy={a:q.a,b:q.b,miss:q.miss,again:true};sess.queue.splice(Math.min(sess.queue.length,sess.idx+4),0,copy);}
+    }
+  }
+}
+function next(){
+  sess.idx++;
+  if(sess.mode==='sprint'){
+    if(performance.now()>=sess.endAt){finish();return;}
+    const pool=FACTS.filter(x=>status(x)!=='good'); const src=pool.length&&Math.random()<.6?pool:FACTS;
+    sess.queue.push(makeQ(src[Math.floor(Math.random()*src.length)],false));
+  }
+  if(sess.idx>=sess.queue.length){finish();return;}
+  renderQ();
+}
+function finish(){
+  if(!sess) return;
+  const s=sess; sess=null; sid++;
+  let html='';
+  if(s.mode==='sprint'){
+    const best=s.right>(S.sprintBest||0); if(best){S.sprintBest=s.right;save();updateSummary();}
+    html='<div class="big">'+s.right+'</div><p>right in 60 seconds.'+(best?' That\u2019s a new best.':' Best so far: '+S.sprintBest+'.')+'</p>';
+  } else {
+    const firstTry=s.answered-[...s.queue].filter(q=>q.again).length;
+    const firstRight=Math.max(0,s.right-[...s.queue].filter(q=>q.again).length);
+    html='<div class="big">'+s.right+'/'+s.answered+'</div><p>right'+(s.missed.size?'. Worth another look:':'. Nothing missed this time.')+'</p>';
+  }
+  if(s.missed.size) html+='<ul class="missed">'+[...s.missed].map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+  html+='<p style="color:var(--muted);font-size:.95rem;margin:6px 0 0">'+mastered()+' of 66 facts mastered.</p>';
+  html+='<div class="row"><button class="btn" id="again">Go again</button><button class="btn alt" id="back">Back</button></div>';
+  $('endCard').innerHTML=html; show('endView');
+  $('again').onclick=()=>start(s.mode,s.table);
+  $('back').onclick=()=>show('home');
+}
+
+// pad
+const PAD=['1','2','3','4','5','6','7','8','9','back','0','enter'];
+$('pad').innerHTML=PAD.map(x=>'<button data-k="'+x+'"'+(x==='enter'?' class="enter" aria-label="Check"':x==='back'?' aria-label="Delete"':'')+'>'+(x==='back'?'⌫':x==='enter'?'✓':x)+'</button>').join('');
+$('pad').addEventListener('click',e=>{const b=e.target.closest('button');if(b)press(b.dataset.k);});
+document.addEventListener('keydown',e=>{
+  if($('session').hidden||!sess) return;
+  if(/^[0-9]$/.test(e.key)){press(e.key);e.preventDefault();}
+  else if(e.key==='Backspace'){press('back');e.preventDefault();}
+  else if(e.key==='Enter'){press('enter');e.preventDefault();}
+});
+$('stopBtn').onclick=()=>{ if(sess&&sess.answered) finish(); else {sess=null;sid++;show('home');} };
+document.querySelectorAll('.mode[data-mode]').forEach(b=>b.onclick=()=>start(b.dataset.mode));
+$('tablePick').innerHTML=[2,3,4,5,6,7,8,9,10,11,12].map(n=>'<button data-t="'+n+'">×'+n+'</button>').join('');
+$('tablePick').addEventListener('click',e=>{const b=e.target.closest('button');if(b)start('table',+b.dataset.t);});
+
+// tabs
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b?'true':'false'));
+  document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!==b.dataset.tab);
+  if(b.dataset.tab==='mapp') renderMap();
+});
+
+// map
+let selKey=null;
+function renderMap(){
+  let h='<tr><th>×</th>';for(let c=2;c<=12;c++)h+='<th>'+c+'</th>';h+='</tr>';
+  for(let r=2;r<=12;r++){h+='<tr><th>'+r+'</th>';for(let c=2;c<=12;c++){const key=k(r,c),st=status(key);
+    h+='<td><button class="c-'+st+(selKey===r+'x'+c?' sel':'')+'" data-r="'+r+'" data-c="'+c+'" aria-label="'+r+' times '+c+'"></button></td>';}h+='</tr>';}
+  $('mapTable').innerHTML=h;
+}
+$('mapTable').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const r=+b.dataset.r,c=+b.dataset.c;selKey=r+'x'+c;renderMap();
+  const st=status(k(r,c)), f=S.facts[k(r,c)];
+  const words={new:'Not tried yet.',bad:'Missed last time.',ok:'Knows it, still a bit slow.',good:'Mastered.'}[st];
+  $('detail').innerHTML='<b>'+r+' × '+c+' = '+(r*c)+'</b><br><span style="color:var(--muted)">'+words+(f?' Right '+f.right+' of '+f.seen+' times.':'')+'</span><br>'+hint(r,c);
+});
+$('resetBtn').onclick=()=>{ if(confirm('Erase all progress on this device?')){S={facts:{},sprintBest:0};save();updateSummary();renderMap();$('detail').textContent='Tap a square.';} };
+
+// tricks
+const TRICKS=[
+  ['×2','Double it.','2 × 8: double 8 = 16'],
+  ['×3','Double it, then add one more.','3 × 7: double 7 = 14, plus 7 = 21'],
+  ['×4','Double it, then double again.','4 × 6: 12, then 24'],
+  ['×5','Times 10, then take half. Answers always end in 0 or 5.','5 × 7: 70, half is 35'],
+  ['×6','Times 5, then add one more. With an even number, the answer ends in that same digit.','6 × 8: 40 + 8 = 48 (ends in 8)'],
+  ['×7','Times 5 plus times 2.','7 × 6: 30 + 12 = 42'],
+  ['×8','Double three times.','8 × 7: 14, 28, 56'],
+  ['×9','Times 10, then take one away. The digits of the answer add up to 9.','9 × 7: 70 − 7 = 63, and 6 + 3 = 9'],
+  ['×10','Add a zero.','10 × 12 = 120'],
+  ['×11','Up to 9, write the number twice.','11 × 7 = 77, 11 × 12 = 132'],
+  ['×12','Times 10 plus times 2.','12 × 7: 70 + 14 = 84'],
+  ['Perfect squares','Learn these by heart. You need them for square roots too.','6×6=36, 7×7=49, 8×8=64, 9×9=81, 11×11=121, 12×12=144'],
+  ['The famous one','5, 6, 7, 8.','56 = 7 × 8']
+];
+$('trickList').innerHTML=TRICKS.map(([t,r,e])=>'<li><h3>'+t+'</h3><p>'+r+'</p><p class="ex">'+e+'</p></li>').join('');
+
+updateSummary();
+</script>
+</body>
+</html>
