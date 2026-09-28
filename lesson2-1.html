@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lesson 2.1: Rational Numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAFBF7; --grid:#DCE6F0; --ink:#1F3A93; --text:#1B2230; --muted:#5A6477;
+  --hl:#FFE45C; --good:#1E8E5A; --bad:#C63D2A; --card:#FFFFFF; --line:#C9D4E3; --onink:#FFFFFF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141C28; --grid:#1F2B3D; --ink:#9DB7FF; --text:#E8EDF5; --muted:#A3AEC2;
+    --hl:#D9B92E; --good:#3FB57E; --bad:#E0634F; --card:#1B2535; --line:#2E3C54; --onink:#141C28;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141C28; --grid:#1F2B3D; --ink:#9DB7FF; --text:#E8EDF5; --muted:#A3AEC2;
+  --hl:#D9B92E; --good:#3FB57E; --bad:#E0634F; --card:#1B2535; --line:#2E3C54; --onink:#141C28;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%}
+body{
+  margin:0;min-height:100%;color:var(--text);background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.5;
+}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 48px}
+h1,h2,.term,.big,.target{font-family:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif}
+h1{font-weight:800;font-size:2.1rem;line-height:1.1;margin:8px 0 6px;color:var(--ink)}
+.home{display:inline-block;color:var(--ink);font-weight:700;font-size:.95rem;text-decoration:none;margin-bottom:4px}
+.sub{color:var(--muted);margin:0 0 16px;font-size:1rem}
+.hl{background:linear-gradient(transparent 38%,var(--hl) 38%,var(--hl) 88%,transparent 88%);padding:0 .15em}
+nav{display:flex;gap:5px;margin:0 0 16px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding:8px 0}
+nav button{flex:1;font:inherit;font-weight:700;font-size:.85rem;padding:10px 2px;border-radius:10px;border:2px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+nav button[aria-selected="true"]{background:var(--ink);color:var(--onink)}
+button:focus-visible,a:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+.panel[hidden]{display:none}
+.card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:20px}
+.meta{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;color:var(--muted);margin-bottom:10px}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:16px}
+.bar i{display:block;height:100%;background:var(--good);width:0;transition:width .3s}
+.term{font-size:1.9rem;font-weight:800;margin:4px 0 10px;line-height:1.15}
+.prompt{color:var(--muted);font-size:.95rem;margin:0 0 14px}
+.answer{border-top:2px dashed var(--line);padding-top:14px;margin-top:6px}
+.answer p{margin:0 0 8px}
+.ex{font-size:.95rem;color:var(--muted)}
+.row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;padding:12px 16px;border-radius:10px;cursor:pointer;border:2px solid var(--ink);background:var(--ink);color:var(--onink);flex:1;min-width:120px}
+.btn.alt{background:transparent;color:var(--ink)}
+.btn.good{background:var(--good);border-color:var(--good);color:#fff}
+.small{flex:0;min-width:0;padding:6px 12px;font-size:.85rem}
+.q{font-size:1.2rem;font-weight:700;margin:0 0 14px}
+.choices{display:grid;gap:8px}
+.choice{font:inherit;text-align:left;padding:12px 14px;border-radius:10px;cursor:pointer;border:2px solid var(--line);background:transparent;color:var(--text)}
+.choice:hover{border-color:var(--ink)}
+.choice.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,transparent)}
+.choice.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,transparent)}
+.choice:disabled{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:1rem}
+.fb.right{background:color-mix(in srgb,var(--good) 14%,transparent)}
+.fb.wrong{background:color-mix(in srgb,var(--bad) 12%,transparent)}
+.done{text-align:center}
+.big{font-weight:800;font-size:3rem;color:var(--ink);margin:6px 0}
+/* stacked fractions */
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.82em;line-height:1.15;margin:0 .08em}
+.fr>span:first-child{border-bottom:2px solid currentColor;padding:0 .18em}
+.fr>span:last-child{padding:0 .18em}
+/* number line */
+.target{font-size:2.4rem;font-weight:800;text-align:center;margin:4px 0 2px;color:var(--ink)}
+.tapnote{text-align:center;color:var(--muted);font-size:.95rem;margin:0 0 8px}
+svg.nl{width:100%;height:auto;display:block;touch-action:manipulation;cursor:pointer;user-select:none;-webkit-user-select:none}
+.nl .axis{stroke:var(--text);stroke-width:3}
+.nl .tick{stroke:var(--text);stroke-width:2}
+.nl .minor{stroke:var(--muted);stroke-width:1.5}
+.nl .lbl{fill:var(--text);font:700 20px "Atkinson Hyperlegible",system-ui,sans-serif;text-anchor:middle}
+.nl .zero{fill:var(--ink)}
+.nl .pick{fill:var(--bad)} .nl .pick.ok{fill:var(--good)}
+.nl .correct{fill:var(--good)}
+.nl .dist{stroke:var(--ink);stroke-width:3}
+.nl .distlbl{fill:var(--ink);font:700 17px "Atkinson Hyperlegible",system-ui,sans-serif;text-anchor:middle}
+.explain{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.explain li{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px}
+.explain .say{font-weight:700;margin:0 0 8px}
+.explain summary{cursor:pointer;color:var(--ink);font-weight:700;font-size:.95rem}
+.explain details p{margin:8px 0 0}
+.trap{border-left:5px solid var(--hl);background:var(--card);padding:14px 16px;border-radius:0 12px 12px 0;margin:18px 0 0}
+.trap h2{font-size:1.15rem;margin:0 0 6px}
+.trap p{margin:0 0 6px}
+.note{font-size:.9rem;color:var(--muted);margin-top:22px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="home" href="index.html">‹ All practice</a>
+  <h1>Lesson 2.1: Rational numbers</h1>
+  <p class="sub">Fractions and decimals, positive and negative. Where they sit on a number line, and how to write them in simplest form.</p>
+
+  <nav role="tablist">
+    <button role="tab" aria-selected="true" data-tab="words">Words</button>
+    <button role="tab" aria-selected="false" data-tab="line">Number line</button>
+    <button role="tab" aria-selected="false" data-tab="practice">Practice</button>
+    <button role="tab" aria-selected="false" data-tab="explain">Explain it</button>
+  </nav>
+
+  <!-- WORDS -->
+  <section class="panel" id="words">
+    <div class="meta"><span id="wCount"></span><button class="btn alt small" id="wReset">Start over</button></div>
+    <div class="bar"><i id="wBar"></i></div>
+    <div class="card" id="wCard"></div>
+    <div class="trap">
+      <h2>The trap on the negative side</h2>
+      <p>{3/4} is bigger than {1/2}. But <b>−{3/4} is smaller than −{1/2}</b>, because it's farther left of zero.</p>
+      <p>On the negative side, the farther from zero, the smaller the number.</p>
+    </div>
+  </section>
+
+  <!-- NUMBER LINE -->
+  <section class="panel" id="line" hidden>
+    <div class="meta"><span id="nCount"></span><span id="nScore"></span></div>
+    <div class="bar"><i id="nBar"></i></div>
+    <div class="card" id="nCard">
+      <div id="nBody"></div>
+    </div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section class="panel" id="practice" hidden>
+    <div class="meta"><span id="pCount"></span><span id="pScore"></span></div>
+    <div class="bar"><i id="pBar"></i></div>
+    <div class="card" id="pCard"></div>
+  </section>
+
+  <!-- EXPLAIN -->
+  <section class="panel" id="explain" hidden>
+    <p class="sub">Say each answer out loud, in your own words, before you open it. If you can explain it, you know it.</p>
+    <ul class="explain" id="eList"></ul>
+  </section>
+
+  <p class="note">Start with Words, then Number line, then Practice. Simplifying fractions uses the GCF from Chapter 1.</p>
+</div>
+
+<script>
+// {n/d}  {-n/d}  {w n/d}  {-w n/d}  → stacked fractions
+function F(s){
+  return s.replace(/\{(-?)(?:(\d+) )?(\d+)\/(\d+)\}/g,(m,neg,w,n,d)=>
+    (neg?'−':'')+(w?w+' ':'')+'<span class="fr"><span>'+n+'</span><span>'+d+'</span></span>');
+}
+document.querySelectorAll('.trap p').forEach(p=>p.innerHTML=F(p.innerHTML));
+
+const CARDS=[
+  ["Rational number","Any number that can be written as a fraction, where the top and bottom are integers and the bottom isn't 0.","{3/4}, −2, 0.5, −{1 1/3} are all rational numbers."],
+  ["Integer","Whole numbers, their opposites, and zero. No fractions or decimals.","…, −3, −2, −1, 0, 1, 2, 3, …"],
+  ["Opposite numbers","Two numbers the same distance from 0, on opposite sides of it.","{2/3} and −{2/3} are opposites. So are 1.5 and −1.5."],
+  ["Absolute value","How far a number is from 0 on a number line. Distance is never negative.","|−{3/4}| = {3/4}, and |{3/4}| = {3/4}."],
+  ["Numerator and denominator","The numerator is the top number. The denominator is the bottom number and tells you how many equal parts one whole is split into.","In {5/8}, the numerator is 5 and the denominator is 8."],
+  ["Proper fraction","A fraction where the numerator is smaller than the denominator. It's between −1 and 1.","{3/5}, −{1/4}"],
+  ["Improper fraction","A fraction where the numerator is equal to or bigger than the denominator. It's 1 or more (or −1 or less).","{7/4}, −{9/2}"],
+  ["Mixed number","A whole number together with a proper fraction.","{1 3/4} is the same as {7/4}."],
+  ["Equivalent fractions","Fractions that look different but have the same value.","{1/2} = {2/4} = {3/6}"],
+  ["Simplest form","A fraction whose numerator and denominator have no common factor except 1. To get there, divide both by their GCF.","{12/18}: the GCF is 6, so it becomes {2/3}."],
+  ["Terminating decimal","A decimal that ends. It can always be written as a fraction over 10, 100, 1000…","0.35 = {35/100} = {7/20}"],
+  ["Writing an integer as a fraction","Put the integer over 1. That's why every integer is a rational number.","5 = {5/1}, and −3 = −{3/1}."]
+];
+
+const QS=[
+  ["What is |−{3/4}|?",["−{3/4}","{3/4}","{4/3}","0"],1,"Absolute value is distance from 0. −{3/4} is {3/4} away from 0."],
+  ["What is |2.5|?",["−2.5","2.5","25","0.25"],1,"2.5 is already positive, so its distance from 0 is 2.5."],
+  ["What is the opposite of {2/3}?",["{3/2}","−{2/3}","−{3/2}","0"],1,"The opposite is the same distance from 0 on the other side. {3/2} is the reciprocal, which is something different."],
+  ["Which two numbers have an absolute value of {5/6}?",["{5/6} and {6/5}","{5/6} and −{5/6}","−{5/6} and −{6/5}","Only {5/6}"],1,"Both {5/6} and −{5/6} are {5/6} away from 0."],
+  ["Write 5 as a fraction.",["{1/5}","{5/1}","{5/5}","{5/10}"],1,"Any integer can go over 1. {5/1} = 5."],
+  ["Write {2 1/3} as an improper fraction.",["{3/3}","{5/3}","{7/3}","{6/3}"],2,"Multiply the whole number by the denominator, then add the numerator: 2 × 3 + 1 = 7. Keep the 3: {7/3}."],
+  ["Write {3 2/5} as an improper fraction.",["{17/5}","{15/5}","{32/5}","{11/5}"],0,"3 × 5 + 2 = 17, so {17/5}."],
+  ["Write −{1 3/4} as an improper fraction.",["−{4/4}","{7/4}","−{7/4}","−{1/4}"],2,"Work with {1 3/4} first: 1 × 4 + 3 = 7, so {7/4}. Then put the negative sign back: −{7/4}."],
+  ["Write {11/4} as a mixed number.",["{2 3/4}","{3 1/4}","{2 1/4}","{1 7/4}"],0,"4 goes into 11 two times (8), with 3 left over. So {2 3/4}."],
+  ["Write {12/18} in simplest form.",["{6/9}","{4/6}","{2/3}","{3/2}"],2,"The GCF of 12 and 18 is 6. 12 ÷ 6 = 2, 18 ÷ 6 = 3. {6/9} and {4/6} are equivalent but not simplest."],
+  ["Write −{15/25} in simplest form.",["−{3/5}","{3/5}","−{5/3}","−{15/25}"],0,"The GCF of 15 and 25 is 5. 15 ÷ 5 = 3, 25 ÷ 5 = 5. The negative sign stays."],
+  ["Write 0.75 as a fraction in simplest form.",["{75/10}","{3/4}","{7/5}","{75/100}"],1,"0.75 = {75/100}. The GCF is 25, so {3/4}."],
+  ["Write 0.4 as a fraction in simplest form.",["{4/10}","{2/5}","{1/4}","{4/100}"],1,"0.4 = {4/10}. Divide both by 2: {2/5}."],
+  ["Write −0.35 as a fraction in simplest form.",["−{35/10}","−{7/20}","−{3/5}","{7/20}"],1,"0.35 = {35/100}. The GCF is 5, so {7/20}. Keep the negative: −{7/20}."],
+  ["Write 1.25 as a fraction in simplest form.",["{125/10}","{5/4}","{1/25}","{12/5}"],1,"1.25 = {125/100}. The GCF is 25, so {5/4}. That's also {1 1/4}."],
+  ["Which is greater: −{1/2} or −{3/4}?",["−{1/2}","−{3/4}","They're equal","Can't tell"],0,"−{1/2} is closer to 0, so it's farther right on the number line, which makes it greater."],
+  ["Which is less: −0.8 or −0.3?",["−0.3","−0.8","They're equal","Can't tell"],1,"−0.8 is farther left of 0, so it's less."],
+  ["Order from least to greatest: {3/4}, −1.5, 0.5, −2",["−1.5, −2, 0.5, {3/4}","−2, −1.5, 0.5, {3/4}","0.5, {3/4}, −1.5, −2","−2, −1.5, {3/4}, 0.5"],1,"Most negative first: −2, then −1.5. Then the positives: 0.5 is less than {3/4} (0.75)."],
+  ["Between which two integers is −{7/4}?",["1 and 2","0 and −1","−1 and −2","−2 and −3"],2,"−{7/4} = −{1 3/4}, so it's between −1 and −2, closer to −2."],
+  ["Which number is between −1 and 0?",["−{3/2}","−{2/3}","{2/3}","−{4/3}"],1,"−{2/3} is a proper fraction, so it sits between −1 and 0. −{3/2} and −{4/3} are past −1."],
+  ["Is −0.6 equal to −{3/5}?",["Yes","No"],0,"−0.6 = −{6/10}. Simplify by dividing by 2: −{3/5}."],
+  ["Which is NOT equal to −{2/3}?",["{-2/3}","−{4/6}","{2/-3}".replace('{2/-3}','<span class="fr"><span>2</span><span>−3</span></span>'),"−{3/2}"],3,"−{3/2} is a different number. A fraction with one negative sign, on top, on bottom, or out front, all mean the same thing."],
+  ["Is every integer a rational number?",["Yes, any integer can be written over 1","No, rational numbers are fractions","Only the positive ones","Only zero"],0,"−4 = −{4/1}, 7 = {7/1}. They can all be written as fractions, so they're all rational."],
+  ["What is the absolute value of 0?",["1","0","−0","It doesn't have one"],1,"0 is zero steps away from itself."]
+];
+
+const EXPLAIN=[
+  ["Why is −{3/4} less than −{1/2}?","Because −{3/4} is farther left of 0 on the number line. On the negative side, the farther you go from 0, the smaller the number gets."],
+  ["What does absolute value mean, and why can't it be negative?","It's the distance from a number to 0. A distance can't be negative. You can't walk −3 steps."],
+  ["How do you change {2 3/5} into an improper fraction?","Multiply the whole number by the denominator, then add the numerator: 2 × 5 + 3 = 13. Keep the same denominator: {13/5}."],
+  ["How do you write 0.45 as a fraction in simplest form?","Two decimal places means hundredths: {45/100}. The GCF of 45 and 100 is 5, so divide both: {9/20}."],
+  ["How do you know when a fraction is in simplest form?","When the only number that divides into both the numerator and the denominator is 1. In other words, their GCF is 1."],
+  ["How does Chapter 1 help with this lesson?","To simplify a fraction you divide the top and bottom by their GCF, which you learned to find in Chapter 1. Knowing your times tables makes it much faster."],
+  ["Why is every integer a rational number?","Because you can write any integer as a fraction by putting it over 1. For example, −6 = −{6/1}."]
+];
+
+// tabs
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b?'true':'false'));
+  document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!==b.dataset.tab);
+  window.scrollTo({top:0});
+}));
+
+// ---------- Words ----------
+let wQueue,wKnown,wShown;
+function wStart(){wQueue=CARDS.map((_,i)=>i);wKnown=0;wShown=false;wRender();}
+function wRender(){
+  const total=CARDS.length;
+  document.getElementById('wCount').textContent=wKnown+' of '+total+' words known';
+  document.getElementById('wBar').style.width=(wKnown/total*100)+'%';
+  const card=document.getElementById('wCard');
+  if(!wQueue.length){card.innerHTML='<div class="done"><div class="big">'+total+'/'+total+'</div><p>You know every word. Now try the Number line tab.</p></div>';return;}
+  const [term,def,ex]=CARDS[wQueue[0]];
+  let h='<div class="term"><span class="hl">'+term+'</span></div>';
+  if(!wShown) h+='<p class="prompt">Say what it means out loud first. Then check.</p><div class="row"><button class="btn" id="wShow">Check my answer</button></div>';
+  else h+='<div class="answer"><p>'+F(def)+'</p><p class="ex">Example: '+F(ex)+'</p></div><div class="row"><button class="btn alt" id="wNo">Not yet</button><button class="btn good" id="wYes">I got it</button></div>';
+  card.innerHTML=h;
+  if(!wShown) document.getElementById('wShow').onclick=()=>{wShown=true;wRender();};
+  else{
+    document.getElementById('wYes').onclick=()=>{wQueue.shift();wKnown++;wShown=false;wRender();};
+    document.getElementById('wNo').onclick=()=>{const c=wQueue.shift();wQueue.splice(Math.min(3,wQueue.length),0,c);wShown=false;wRender();};
+  }
+}
+document.getElementById('wReset').onclick=wStart;
+
+// ---------- Number line ----------
+const NL_ROUNDS=10, MIN=-2, MAX=2, X0=40, X1=560, Y=62;
+const xOf=v=>X0+(v-MIN)/(MAX-MIN)*(X1-X0);
+const gcd=(a,b)=>b?gcd(b,a%b):Math.abs(a);
+let nl;
+function fmtPlain(n,d){ // for SVG text
+  const g=gcd(Math.abs(n),d); n/=g; d/=g;
+  if(d===1) return (n<0?'−':'')+Math.abs(n);
+  return (n<0?'−':'')+Math.abs(n)+'/'+d;
+}
+function makeTarget(){
+  const d=[2,3,4,5,4,3][Math.floor(Math.random()*6)];
+  let n;
+  do{ n=Math.floor(Math.random()*(4*d+1))-2*d; }while(n===0||n%d===0);
+  if(Math.random()<.65 && n>0) n=-n; // favour negatives, the new skill
+  const g=gcd(Math.abs(n),d), rn=n/g, rd=d/g;
+  const neg=n<0, an=Math.abs(rn);
+  let html, plain;
+  const r=Math.random();
+  if(rd!==3 && r<.35){
+    const dec=(an/rd).toString();
+    html=(neg?'−':'')+dec; plain=html;
+  } else if(an>rd && r<.7){
+    const w=Math.floor(an/rd), rem=an%rd;
+    html=F('{'+(neg?'-':'')+w+' '+rem+'/'+rd+'}');
+    plain=(neg?'−':'')+w+' '+rem+'/'+rd;
+  } else {
+    html=F('{'+(neg?'-':'')+an+'/'+rd+'}');
+    plain=(neg?'−':'')+an+'/'+rd;
+  }
+  return {n,d,html,plain};
+}
+function nlStart(){nl={i:0,score:0,t:makeTarget(),answered:false};nlRender();}
+function drawLine(t,pick){
+  let s='<svg class="nl" id="nlSvg" viewBox="0 0 600 130" role="img" aria-label="Number line from −2 to 2">';
+  s+='<line class="axis" x1="'+(X0-22)+'" y1="'+Y+'" x2="'+(X1+22)+'" y2="'+Y+'"/>';
+  s+='<path d="M'+(X0-22)+' '+Y+' l12 -8 v16z M'+(X1+22)+' '+Y+' l-12 -8 v16z" fill="currentColor" style="color:var(--text)"/>';
+  for(let k=MIN*t.d;k<=MAX*t.d;k++){
+    const x=xOf(k/t.d), major=k%t.d===0;
+    s+='<line class="'+(major?'tick':'minor')+'" x1="'+x+'" y1="'+(Y-(major?14:8))+'" x2="'+x+'" y2="'+(Y+(major?14:8))+'"/>';
+    if(major){const v=k/t.d; s+='<text class="lbl'+(v===0?' zero':'')+'" x="'+x+'" y="'+(Y+38)+'">'+(v<0?'−'+(-v):v)+'</text>';}
+  }
+  if(pick!==undefined){
+    const ok=pick===t.n, v=t.n/t.d;
+    // distance-from-zero bracket
+    const x0=xOf(0), xv=xOf(v), yb=Y-34;
+    s+='<line class="dist" x1="'+x0+'" y1="'+yb+'" x2="'+xv+'" y2="'+yb+'"/>';
+    s+='<line class="dist" x1="'+x0+'" y1="'+(yb-6)+'" x2="'+x0+'" y2="'+(yb+6)+'"/><line class="dist" x1="'+xv+'" y1="'+(yb-6)+'" x2="'+xv+'" y2="'+(yb+6)+'"/>';
+    s+='<text class="distlbl" x="'+((x0+xv)/2)+'" y="'+(yb-10)+'">distance from 0: '+fmtPlain(Math.abs(t.n),t.d)+'</text>';
+    if(!ok) s+='<circle class="pick" cx="'+xOf(pick/t.d)+'" cy="'+Y+'" r="10"/>';
+    s+='<circle class="correct" cx="'+xv+'" cy="'+Y+'" r="11"/>';
+  }
+  return s+'</svg>';
+}
+function nlRender(){
+  document.getElementById('nCount').textContent=nl.i<NL_ROUNDS?('Number '+(nl.i+1)+' of '+NL_ROUNDS):'Done';
+  document.getElementById('nScore').textContent=nl.score+' correct';
+  document.getElementById('nBar').style.width=(nl.i/NL_ROUNDS*100)+'%';
+  const body=document.getElementById('nBody');
+  if(nl.i>=NL_ROUNDS){
+    body.innerHTML='<div class="done"><div class="big">'+nl.score+'/'+NL_ROUNDS+'</div><p>'+(nl.score>=8?'Nice work. Try the Practice tab next.':'Go again. It gets easier each round.')+'</p><div class="row"><button class="btn" id="nAgain">Go again</button></div></div>';
+    document.getElementById('nAgain').onclick=nlStart;return;
+  }
+  const t=nl.t;
+  body.innerHTML='<p class="tapnote">Tap where this number goes:</p><div class="target">'+t.html+'</div>'+drawLine(t)+'<div id="nFb"></div>';
+  document.getElementById('nlSvg').addEventListener('click',nlTap);
+}
+function nlTap(e){
+  if(nl.answered) return;
+  const svg=e.currentTarget, pt=svg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+  const p=pt.matrixTransform(svg.getScreenCTM().inverse());
+  let v=MIN+(p.x-X0)/(X1-X0)*(MAX-MIN);
+  let k=Math.round(v*nl.t.d); k=Math.max(MIN*nl.t.d,Math.min(MAX*nl.t.d,k));
+  nl.answered=true;
+  const t=nl.t, ok=k===t.n; if(ok) nl.score++;
+  const between=(()=>{const v=t.n/t.d, lo=Math.floor(v), hi=Math.ceil(v);return 'between '+(lo<0?'−'+(-lo):lo)+' and '+(hi<0?'−'+(-hi):hi);})();
+  const parts='Each whole is split into '+t.d+' parts here, so each small tick is '+fmtPlain(1,t.d)+'.';
+  svg.outerHTML=drawLine(t,k);
+  document.getElementById('nFb').innerHTML='<div class="fb '+(ok?'right':'wrong')+'"><b>'+(ok?'Right.':'Not quite.')+'</b> '+t.html+' is '+between+'. '+parts+'</div><div class="row"><button class="btn" id="nNext">'+(nl.i+1<NL_ROUNDS?'Next number':'See my score')+'</button></div>';
+  document.getElementById('nScore').textContent=nl.score+' correct';
+  const nx=document.getElementById('nNext'); nx.focus();
+  nx.onclick=()=>{nl.i++;nl.t=makeTarget();nl.answered=false;nlRender();};
+}
+
+// ---------- Practice ----------
+let pOrder,pIdx,pScore,pMissed;
+function pStart(list){pOrder=list||QS.map((_,i)=>i);pIdx=0;pScore=0;pMissed=[];pRender();}
+function pRender(){
+  const total=pOrder.length;
+  document.getElementById('pCount').textContent=pIdx<total?'Question '+(pIdx+1)+' of '+total:'Done';
+  document.getElementById('pScore').textContent=pScore+' correct';
+  document.getElementById('pBar').style.width=(pIdx/total*100)+'%';
+  const card=document.getElementById('pCard');
+  if(pIdx>=total){
+    let h='<div class="done"><div class="big">'+pScore+'/'+total+'</div>';
+    if(pMissed.length) h+='<p>'+pMissed.length+' to go back over.</p><div class="row"><button class="btn" id="pRetry">Redo the ones I missed</button><button class="btn alt" id="pAll">Start over</button></div>';
+    else h+='<p>All correct. Now try explaining a few out loud in the Explain it tab.</p><div class="row"><button class="btn alt" id="pAll">Start over</button></div>';
+    card.innerHTML=h+'</div>';
+    const r=document.getElementById('pRetry'); if(r) r.onclick=()=>pStart(pMissed.slice());
+    document.getElementById('pAll').onclick=()=>pStart();return;
+  }
+  const [q,choices,ans,why]=QS[pOrder[pIdx]];
+  card.innerHTML='<p class="q">'+F(q)+'</p><div class="choices">'+choices.map((c,i)=>'<button class="choice" data-i="'+i+'">'+F(c)+'</button>').join('')+'</div><div id="pFb"></div>';
+  card.querySelectorAll('.choice').forEach(btn=>btn.onclick=()=>{
+    const pick=+btn.dataset.i, ok=pick===ans;
+    card.querySelectorAll('.choice').forEach(b=>{b.disabled=true;if(+b.dataset.i===ans)b.classList.add('right');else if(+b.dataset.i===pick)b.classList.add('wrong');});
+    if(ok)pScore++;else pMissed.push(pOrder[pIdx]);
+    document.getElementById('pFb').innerHTML='<div class="fb '+(ok?'right':'wrong')+'"><b>'+(ok?'Right.':'Not quite.')+'</b> '+F(why)+'</div><div class="row"><button class="btn" id="pNext">'+(pIdx+1<pOrder.length?'Next question':'See my score')+'</button></div>';
+    document.getElementById('pScore').textContent=pScore+' correct';
+    const nx=document.getElementById('pNext'); nx.onclick=()=>{pIdx++;pRender();}; nx.focus();
+  });
+}
+
+// ---------- Explain ----------
+document.getElementById('eList').innerHTML=EXPLAIN.map(([q,a])=>'<li><p class="say">'+F(q)+'</p><details><summary>Check my answer</summary><p>'+F(a)+'</p></details></li>').join('');
+
+wStart(); nlStart(); pStart();
+</script>
+</body>
+</html>
